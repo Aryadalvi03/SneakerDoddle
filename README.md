@@ -32,7 +32,7 @@ Clone the repository, open the project folder in VS Code, and run the index.html
 <img width="1366" height="768" alt="Screenshot 2025-04-25 132941" src="https://github.com/user-attachments/assets/271e0ab5-a9b1-4e36-a0cd-89eea2f165ce" />
 <img width="1366" height="768" alt="Screenshot 2025-04-25 132958" src="https://github.com/user-attachments/assets/49c42714-03a9-4d59-880f-2345afc2b5d1" />
 <img width="510" height="599" alt="Screenshot 2025-04-25 202253" src="https://github.com/user-attachments/assets/7984b39a-6884-4aa6-9131-8d732bb4a55f" />
-<img width="1365" height="762" alt="Screenshot 2025-04-25 232404" src="https://github.com/user-attachments/assets/a0748fe1-2d25-4806-a3ed-e60e59b0acd1" />
+<img width="1365" height="674" alt="image" src="https://github.com/user-attachments/assets/169cbabe-ad51-4345-be97-855505a40424" />
 
 
 ## Author
