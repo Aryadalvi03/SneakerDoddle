@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="./output.css" rel="stylesheet" />
+  <title>Billing Page</title>
+  <style>
+    nav a {
+      position: relative;
+      color: white;
+      text-decoration: none;
+      font-size: 1.25rem;
+      transition: color 0.3s ease-in-out;
+    }
+    nav a:hover {
+      color: #ff9800;
+    }
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      width: 0;
+      height: 3px;
+      background: #ff9800;
+      transition: all 0.3s ease-in-out;
+      transform: translateX(-50%);
+    }
+    nav a:hover::after {
+      width: 100%;
+    }
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url("billing2.png") no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .form-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+      padding-top: 120px;
+      width: 100%;
+    }
+    form {
+      background-color: #fff;
+      max-width: 400px;
+      width: 100%;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #555;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .proceed-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background-color: #e9f8ec;
+      color: #4CAF50;
+      border: 2px solid #4CAF50;
+      padding: 15px 0;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+    .proceed-btn:hover {
+      background-color: #d7f1de;
+    }
+    header {
+      z-index: 50;
+    }
+  </style>
+</head>
+<body>
+  <header class="fixed top-0 left-0 right-0 bg-orange-300 shadow-lg">
+    <nav class="container mx-auto flex items-center justify-between py-8 px-8">
+      <div>
+        <h1 class="ml-12 text-3xl font-bold hover:text-gray-900 hover:scale-110 transition duration-300">
+          SneakerDoodle
+        </h1>
+      </div>
+      <div class="flex items-center">
+        <a class="ml-12 text-white hover:text-gray-900 text-xl transition duration-300" href="index.html">Home</a>
+        <a class="ml-12 text-white hover:text-gray-900 text-xl transition duration-300" href="catalogue.html">Catalogue</a>
+        <a class="ml-12 text-white hover:text-gray-900 text-xl transition duration-300" href="payment.html">Billing</a>
+        <a class="ml-12 text-white hover:text-gray-900 text-xl transition duration-300" href="shipping.html">Shipping</a>
+        <a class="ml-12 text-white hover:text-gray-900 text-xl transition duration-300" href="support.html">Contact Us</a>
+      </div>
+      <div class="flex items-center">
+        <a href="login.html" class="size-10 ml-8"><img src="../images/user.svg" alt="user" /></a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Form Section -->
+  <div class="form-wrapper">
+    <form id="billingForm">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required />
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone:</label>
+        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required />
+      </div>
+      <button type="submit" class="proceed-btn">Submit</button>
+    </form>
+  </div>
+
+  <!-- Firebase + Firestore Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+  
+    const firebaseConfig = {
+      apiKey: "AIzaSyBIqtuC7vsk5cM0G3NYr6qZeC5DurqBFnM",
+      authDomain: "sneakerdoodle-900ba.firebaseapp.com",
+      projectId: "sneakerdoodle-900ba",
+      storageBucket: "sneakerdoodle-900ba.appspot.com",
+      messagingSenderId: "116875379351",
+      appId: "1:116875379351:web:db999a03fa86a74d5c5fd2",
+      databaseURL: "https://sneakerdoodle-900ba-default-rtdb.firebaseio.com"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+  
+    document.getElementById('billingForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+  
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+  
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const uid = user.uid;
+          const billingRef = ref(db, 'billingUsers/' + uid);
+  
+          try {
+            await set(billingRef, { name, email, phone });
+            alert("Billing info saved to Realtime DB!");
+            window.location.href = "shipping.html";
+          } catch (error) {
+            console.error("Database Error:", error);
+            alert("Failed to save billing info.");
+          }
+  
+        } else {
+          alert("You must be logged in to save billing info.");
+        }
+      });
+    });
+  </script>
+  
+</body>
+</html>

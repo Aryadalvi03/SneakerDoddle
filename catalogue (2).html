@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SneakerDoodle</title>
+    <link rel="stylesheet" href="./output.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+
+        /* Header styling */
+        .header {
+            background-color: #e76f51;
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #333;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-icon {
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 250px;
+            background-color: #333333;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 70px; /* Adjusted to account for fixed header */
+            left: 0;
+            height: calc(100% - 70px); /* Adjusted height */
+            transition: all 0.3s ease;
+        }
+
+        .sidebar h2 {
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            color: #FFD700;
+            background-color: #333333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            font-size: 18px;
+            color: #BDC3C7;
+            text-decoration: none;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background-color: #333333;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: #ff9800; /* Changed to match theme */
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Main content styling */
+        .main-content {
+            margin-left: 270px;
+            padding: 20px;
+            margin-top: 70px; /* Adjusted to account for fixed header */
+        }
+
+        .filters {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filters label {
+            font-weight: bold;
+        }
+
+        .filters select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .catalogue-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .shoe-tile {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .shoe-tile:hover {
+            transform: translateY(-5px);
+        }
+
+        .shoe-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .shoe-info {
+            padding: 15px;
+        }
+
+        .shoe-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .shoe-price {
+            color: #ff0000;
+            font-size: 16px;
+        }
+
+        .rating {
+            font-size: 14px;
+            color: #ffa500;
+        }
+
+        .add-to-cart {
+            background-color: #ffd700;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .add-to-cart:hover {
+            background-color: #ffcc00;
+        }
+
+        .buy-now {
+            background-color: #ff9800; /* Changed to match theme */
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            color: white;
+        }
+
+        .buy-now:hover {
+            background-color: #f57c00; /* Darker orange when hovering */
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            padding-top: 60px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 70%;
+            max-width: 600px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-content img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            text-decoration: none;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Cart Sidebar Styles */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .cart-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+            padding: 0 10px;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            color: #ff0000;
+        }
+
+        .cart-item-discount {
+            color: #4CAF50;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .cart-item-original-price {
+            text-decoration: line-through;
+            color: #888;
+            font-size: 14px;
+            margin-right: 5px;
+        }
+
+        .cart-item-remove {
+            background-color: #ff5252;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .cart-total {
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .cart-subtotal {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+        }
+
+        .cart-discount {
+            display: flex;
+            justify-content: space-between;
+            color: #4CAF50;
+            margin-top: 5px;
+        }
+
+        .cart-final-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            font-size: 18px;
+        }
+
+        .cart-checkout {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .cart-checkout:hover {
+            background-color: #f57c00;
+        }
+
+        .cart-empty {
+            text-align: center;
+            margin-top: 50px;
+            color: #888;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ff0000;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .cart-icon-wrapper {
+            position: relative;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.open {
+            display: block;
+        }
+
+        /* Search autocomplete styles */
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: none;
+            width: 200px;
+            font-size: 14px;
+        }
+
+        .search-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1001;
+            display: none;
+        }
+
+        .search-dropdown.active {
+            display: block;
+        }
+
+        .search-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .search-item:last-child {
+            border-bottom: none;
+        }
+
+        .not-found {
+            padding: 15px;
+            text-align: center;
+            color: #888;
+        }
+
+        /* Wishlist icon styles */
+        .wishlist-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 10;
+            transition: color 0.3s ease;
+        }
+
+        .wishlist-icon.active {
+            color: #ff0000;
+        }
+
+        .shoe-tile {
+            position: relative;
+        }
+
+        /* Wishlist sidebar styles */
+        .wishlist-sidebar {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .wishlist-sidebar.open {
+            right: 0;
+        }
+
+        .wishlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .wishlist-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .wishlist-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .wishlist-item-info {
+            flex-grow: 1;
+            padding: 0 10px;
+        }
+
+        .wishlist-item-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .wishlist-item-price {
+            color: #ff0000;
+        }
+
+        .wishlist-item-remove {
+            background-color: #ff5252;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .wishlist-empty {
+            text-align: center;
+            margin-top: 50px;
+            color: #888;
+        }
+
+        .wishlist-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ff0000;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .wishlist-icon-wrapper {
+            position: relative;
+        }
+
+        /* Promotional offers styles */
+        .promo-container {
+            background: linear-gradient(135deg, #ffd700 0%, #ff9800 100%);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .promo-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .promo-item {
+            background-color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .promo-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .promo-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .promo-icon {
+            background-color: #ff9800;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .promo-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #ff0000;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 0 0 0 10px;
+            font-weight: bold;
+            transform: rotate(45deg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .eligible-product {
+            position: relative;
+        }
+
+        .offer-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #ff9800;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .first-order-checkbox {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px dashed #ddd;
+        }
+
+        .first-order-checkbox input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - Updated to match the provided image -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">SneakerDoodle</div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="catalogue.html">Catalogue</a>
+                <a href="payment.html">Billing</a>
+                <a href="shipping.html">Shipping</a>
+                
+                <a href="support.html">Contact Us</a>
+            <a href="#" id="wishlist-toggle" style="color: rgb(231, 111, 81);">Wishlist</a>
+
+            </div>
+            <div class="header-icons">
+                <a href="login.html" class="header-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="Search products...">
+                    <div id="search-dropdown" class="search-dropdown"></div>
+                </div>
+                <div class="wishlist-icon-wrapper">
+                    <a href="#" id="wishlist-icon-toggle" class="header-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </a>
+                    <span id="wishlist-badge" class="wishlist-badge" style="display: none;">0</span>
+                </div>
+                <div class="cart-icon-wrapper">
+                    <a href="#" id="cart-toggle" class="header-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                    </a>
+                    <span id="cart-badge" class="cart-badge" style="display: none;">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="sidebar">
+        <h2>Brands</h2>
+        <div id="brand-list"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="filters">
+            <label for="color-filter">Color:</label>
+            <select id="color-filter">
+                <option value="all">All</option>
+            </select>
+
+            <label for="size-filter">Size:</label>
+            <select id="size-filter">
+                <option value="all">All</option>
+            </select>
+        </div>
+
+        <div class="catalogue-container" id="catalogue">
+            <!-- Shoes will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Modal for viewing shoe details -->
+    <div id="shoe-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <img id="modal-image" src="/placeholder.svg" alt="Shoe Image">
+            <div id="modal-shoe-name" class="shoe-name"></div>
+            <div id="modal-shoe-price" class="shoe-price"></div>
+            <div id="modal-shoe-rating" class="rating"></div>
+            <div id="modal-shoe-colors">Colors: </div>
+            <div id="modal-shoe-sizes">Sizes: </div>
+            <div class="add-to-cart" id="modal-add-to-cart">Add to Cart</div>
+            <div class="buy-now">Buy Now</div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="overlay" id="overlay"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <button class="cart-close" id="cart-close">&times;</button>
+        </div>
+        
+        <!-- Promotional Offers Section -->
+        <div class="promo-container">
+            <div class="promo-header">SPECIAL OFFERS</div>
+            <ul class="promo-list">
+                <li class="promo-item">
+                    <div class="promo-icon">%</div>
+                    <span>Up to 30% OFF on all sneakers</span>
+                </li>
+                <li class="promo-item">
+                    <div class="promo-icon">🎁</div>
+                    <span>Buy 1 Get 1 Free on selected items</span>
+                </li>
+                <li class="promo-item">
+                    <div class="promo-icon">🆕</div>
+                    <span>15% OFF on your first order</span>
+                </li>
+                <li class="promo-item">
+                    <div class="promo-icon">🚚</div>
+                    <span>Free shipping on orders over ₹1,500</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div id="cart-items">
+            <!-- Cart items will be added here -->
+        </div>
+        <div id="cart-empty" class="cart-empty">
+            <p>Your cart is empty</p>
+        </div>
+        
+        <div id="cart-summary" style="display: none;">
+            <div class="cart-subtotal">
+                <span>Subtotal:</span>
+                <span id="cart-subtotal-amount">₹0</span>
+            </div>
+            <div class="cart-discount">
+                <span>Discount:</span>
+                <span id="cart-discount-amount">-₹0</span>
+            </div>
+            <div class="first-order-checkbox">
+                <input type="checkbox" id="first-order-discount" onchange="applyFirstOrderDiscount()">
+                <label for="first-order-discount">This is my first order (15% off)</label>
+            </div>
+            <div class="cart-final-total">
+                <span>Total:</span>
+                <span id="cart-final-total-amount">₹0</span>
+            </div>
+        </div>
+        
+        <button id="cart-checkout" class="cart-checkout" style="display: none;">
+            Checkout
+        </button>
+    </div>
+
+    <!-- Wishlist Sidebar -->
+    <div class="wishlist-sidebar" id="wishlist-sidebar">
+        <div class="wishlist-header">
+            <h2>Your Wishlist</h2>
+            <button class="wishlist-close" id="wishlist-close">&times;</button>
+        </div>
+        <div id="wishlist-items">
+            <!-- Wishlist items will be added here -->
+        </div>
+        <div id="wishlist-empty" class="wishlist-empty">
+            <p>Your wishlist is empty</p>
+        </div>
+    </div>
+
+    <script>
+        const shoes = [
+        { name: "Mens Court Vision Lo", brand: "Nike", image: "n1.png.png", price: "₹670", rating: "3.8 ★★★☆☆", colors: ["White"], sizes: [6, 7, 8], offer: "30% OFF" },
+            { name: "Vision Force", brand: "Nike", image: "n2.png.png", price: "₹749", rating: "3.4 ★★★☆☆", colors: ["Beige"], sizes: [7, 5, 9] },
+            { name: "Mens Royale 2", brand: "Nike", image: "n3.png.png", price: "₹1,639", rating: "4.2 ★★★★☆", colors: ["Black"], sizes: [8, 9, 10], offer: "Buy 1 Get 1" },
+            { name: "Mens Royale 1", brand: "Nike", image: "n4.png.png", price: "₹4,469", rating: "4.5 ★★★★★", colors: ["White"], sizes: [6, 7] },
+            { name: "Cosmet X lows ", brand: "Nike", image: "n5.png.jpg", price: "₹850", rating: "4.0 ★★★★☆", colors: ["Pink"], sizes: [7, 3, 4], offer: "30% OFF" },
+            { name: "Digitus Crucis", brand: "Nike", image: "n6.png.png", price: "₹528", rating: "4.5 ★★★★★", colors: ["Brown"], sizes: [5, 7] },
+            { name: "Dunk Low Retro Leather", brand: "Nike", image: "n7.png.png", price: "₹9,129", rating: "4.6 ★★★★★", colors: ["Green"], sizes: [6, 8, 10] },
+            { name: "Revolution 7", brand: "Nike", image: "n8.png.png", price: "₹2,104", rating: "4.5 ★★★★★", colors: ["Red"], sizes: [6, 7], offer: "Buy 1 Get 1" },
+            { name: "lavender Forest Low", brand: "Nike", image: "n9.png.png", price: "₹1,500", rating: "4.5 ★★★★★", colors: ["Lavender"], sizes: [3,4,5] },
+            { name: "WMNS Gamma Force", brand: "Nike", image: "n10.png.png", price: "₹5,000", rating: "4.5 ★★★★★", colors: ["Black", "White"], sizes: [6, 7] },
+
+            { name: "VL Court 3.0", brand: "Adidas", image: "a1.png.png", price: "₹2,500", rating: "4.5 ★★★★★", colors: ["Black", "Dark Brown"], sizes: [6, 7,10], offer: "30% OFF" },
+            { name: "Windx ", brand: "Adidas", image: "a2.png.png", price: "₹750", rating: "4.0 ★★★★☆", colors: ["White"], sizes: [6,3,4] },
+            { name: "Classic Rubber M4", brand: "Adidas", image: "a3.png.png", price: "₹3,500", rating: "4.5 ★★★★★", colors: ["Grey"], sizes: [8, 7,] },
+            { name: "ColourBlocked Round-Toe", brand: "Adidas", image: "a4.png.png", price: "₹8,999", rating: "4.5 ★★★★★", colors: ["White", "Green", "Brown"], sizes: [6,3,10,7], offer: "Buy 1 Get 1" },
+            { name: "U.S Polo Assn.", brand: "Adidas", image: "a5.png.png", price: "₹550", rating: "3.4 ★★★☆☆", colors: ["Pink", "White"], sizes: [3,4,5] },
+            { name: "Opticrun W ", brand: "Adidas", image: "a6.png.png", price: "₹1,760", rating: "4.2 ★★★★☆", colors: ["Lavender"], sizes: [6, 7,8], offer: "30% OFF" },
+            { name: "VL Court 2.0", brand: "Adidas", image: "a7.png.png", price: "₹5,500", rating: "5.5 ★★★★★", colors: ["Green"], sizes: [6,] },
+            { name: "Ford-Up", brand: "Adidas", image: "a8.png.png", price: "₹4,99", rating: "3.2★★★☆☆ ", colors: ["Pink"], sizes: [6, 7,3] },
+            { name: "WX Court", brand: "Adidas", image: "a9.png.png", price: "₹4,499", rating: "4.4 ★★★★★", colors: ["White", "Grey"], sizes: [6, 7,10] },
+            { name: "Lite Racer 4.0", brand: "Adidas", image: "a10.png.png", price: "₹2,000", rating: "3.8 ★★★☆☆", colors: ["Orange"], sizes: [6, 7,10] },
+
+            { name: "Mens Court Shatter Ivory", brand: "Puma", image: "p1.png.png", price: "₹699", rating: "3.4 ★★★☆☆", colors: ["White"], sizes: [3,4,5], offer: "30% OFF" },
+            { name: "Court Shatter Unisex", brand: "Puma", image: "p2.png.png", price: "₹2,699", rating: "4.0 ★★★★☆", colors: ["White", "Blue"], sizes: [6,8] },
+            { name: "Terranova ", brand: "Puma", image: "p3.png.png", price: "₹1,000", rating: "3.9 ★★★☆☆ ", colors: ["White", "Brown"], sizes: [10] },
+            { name: "Mens Court Black", brand: "Puma", image: "p4.png.png", price: "₹3,467", rating: "4.8 ★★★★★", colors: ["Black"], sizes: [6,9], offer: "Buy 1 Get 1" },
+            { name: "Road Rider Suede", brand: "Puma", image: "p5.png.png", price: "₹5,000", rating: "4.9 ★★★★★", colors: ["White", "Black"], sizes: [8,9 ,10] },
+            { name: "Perforated Courtismo", brand: "Puma", image: "p6.png.png", price: "₹799", rating: "3.5 ★★★☆☆", colors: [ "Green"], sizes: [3,4,5] },
+            { name: "Smashic ", brand: "Puma", image: "p7.png.png", price: "₹1,109", rating: "4.0", colors: ["Brown"], sizes: [3,4,6], offer: "30% OFF" },
+            { name: "Ca Pro Classic Panelled", brand: "Puma", image: "p8.png.png", price: "7,800", rating: "4.5 ★★★★★", colors: ["White", "Grey"], sizes: [5] },
+            { name: "Mens Starten", brand: "Puma", image: "p9.png.png", price: "₹1,600", rating: "4.0 ★★★★☆", colors: ["Beige"], sizes: [6,8,9] },
+            { name: "Club II Era ", brand: "Puma", image: "p10.png.png", price: "₹999", rating: "3.8 ★★★☆☆", colors: ["Pink"], sizes: [3,4,5] },
+
+            { name: "Chuck Taylor Star", brand: "Converse", image: "c1.png.png", price: "₹4,789", rating: "4.8 ★★★★★", colors: ["Black"], sizes: [8,6,5], offer: "Buy 1 Get 1" },
+            { name: "Pro Blaze Velcro ", brand: "Converse", image: "c2.png.png", price: "2,500", rating: "4.5 ★★★★★", colors: ["White", "Grey"], sizes: [8,9] },
+            { name: "Unisex Chuck 70 Canvas ", brand: "Converse", image: "c3.png.png", price: "1,500", rating: "3.9 ★★★☆☆", colors: ["Beige"], sizes: [3,5,6] },
+            { name: "Taylor All Star ", brand: "Converse", image: "c4.png.png", price: "6,300", rating: "4.5 ★★★★★", colors: ["Red"], sizes: [8,9,], offer: "30% OFF" },
+            { name: "Chuck Taylor Star", brand: "Converse", image: "c5.png.png", price: "₹2,500", rating: "4.6 ★★★★★", colors: ["White",], sizes: [8,9,] },
+            { name: "Chuck 70 High Top", brand: "Converse", image: "c6.png.png", price: "₹5,567", rating: "4.9 ★★★★★", colors: ["Blue"], sizes: [9,10] },
+            { name: "Run Star", brand: "Converse", image: "c7.png.png", price: "₹7,500", rating: "4.8★★★★★", colors: ["White", "Black "], sizes: [5,6,7], offer: "Buy 1 Get 1" },
+            { name: "Chuck Taylor Star ", brand: "Converse", image: "c8.png.png", price: "₹1,999", rating: "4.0 ★★★★☆", colors: ["Orange"], sizes: [8,9,] },
+            { name: "Taylor All Star ", brand: "Converse", image: "c9.png.png", price: "₹4,500", rating: "3.9 ★★★☆☆", colors: ["Pink"], sizes: [8,9,] },
+            { name: "Pro classic converse ", brand: "Converse", image: "c10.png.png", price: "₹3,299", rating: "4.0 ★★★★☆", colors: ["White"], sizes: [8,9,] },
+            
+
+            { name: "550 Balance", brand: "New Balance", image: "nb1.png.png", price: "1,500", rating: "3.8 ★★★☆☆", colors: ["White"], sizes: [5,7,], offer: "30% OFF" },
+            { name: "BB480 Lace-Up ", brand: "New Balance", image: "nb2.png.png", price: "₹5,519", rating: "4.5 ★★★★★", colors: ["White", "Green"], sizes: [5,7,] },
+            { name: "720 White Casual ", brand: "New Balance", image: "nb3.png.png", price: "₹999", rating: "3.9 ★★★☆☆", colors: ["White"], sizes: [5,7,6] },
+            { name: "Balance 574 ", brand: "New Balance", image: "nb4.png.png", price: "₹6,899", rating: "4.7 ★★★★★", colors: ["Blue"], sizes: [8,9], offer: "Buy 1 Get 1" },
+            { name: "Unisex-Adult 500 ", brand: "New Balance", image: "nb5.png.png", price: "₹3,499", rating: "4.5 ★★★★★", colors: ["Beige"], sizes: [6,7,8] },
+            { name: "Mesh Upper-Top ", brand: "New Balance", image: "nb6.png.png", price: "₹2,000", rating: "4.0 ★★★★☆", colors: ["Grey"], sizes: [5,7,8] },
+            { name: "Mens Black Casual ", brand: "New Balance", image: "nb7.png.png", price: "₹6,500", rating: "4.5 ★★★★★", colors: ["Black"], sizes: [8,9,10], offer: "30% OFF" },
+            { name: "560 Balnace ", brand: "New Balance", image: "nb8.png.png", price: "₹8,999", rating: "4.9 ★★★★★", colors: ["Yellow"], sizes: [5,7,] },
+            { name: "B630 Marron ", brand: "New Balance", image: "nb9.png.png", price: "₹999", rating: "3.8 ★★★☆☆", colors: ["Marron"], sizes: [6,7,8,] },
+            { name: "560 Balnace ", brand: "New Balance", image: "nb10.png.png", price: "₹8,999", rating: "4.9 ★★★★★", colors: ["Yellow"], sizes: [5,7,] }
+        ];
+
+        const brands = ["Nike", "Adidas", "Puma", "Converse", "New Balance"];
+        let cart = [];
+        let wishlist = [];
+        let isFirstOrder = false;
+
+        function displayBrands() {
+            const brandList = document.getElementById("brand-list");
+            brands.forEach(brand => {
+                const brandLink = document.createElement("a");
+                brandLink.textContent = brand;
+                brandLink.href = "#";
+                brandLink.addEventListener("click", () => filterShoes(brand));
+                brandList.appendChild(brandLink);
+            });
+        }
+
+        function displayShoes(shoesList) {
+            const container = document.getElementById("catalogue");
+            container.innerHTML = '';
+            shoesList.forEach(shoe => {
+                const shoeTile = document.createElement("div");
+                shoeTile.classList.add("shoe-tile");
+                
+                // Check if shoe is in wishlist
+                const isInWishlist = wishlist.some(item => item.name === shoe.name);
+                
+                // Add offer tag if shoe has an offer
+                const offerTag = shoe.offer ? `<div class="offer-tag">${shoe.offer}</div>` : '';
+                
+                shoeTile.innerHTML = `
+                    ${offerTag}
+                    <div class="wishlist-icon ${isInWishlist ? 'active' : ''}" onclick="toggleWishlist('${shoe.name}', '${shoe.price}', '${shoe.image}')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="${isInWishlist ? 'red' : 'none'}" stroke="${isInWishlist ? 'red' : 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </div>
+                    <img src="${shoe.image}" alt="${shoe.name}" class="shoe-image" onclick="openModal('${shoe.name}', '${shoe.price}', '${shoe.rating}', '${shoe.image}', '${shoe.colors.join(", ")}', '${shoe.sizes.join(", ")}')">
+                    <div class="shoe-info">
+                        <div class="shoe-name">${shoe.name}</div>
+                        <div class="rating">${shoe.rating}</div>
+                        <div class="shoe-price">${shoe.price}</div>
+                        <div class="add-to-cart" onclick="addToCart('${shoe.name}', '${shoe.price}', '${shoe.image}')">Add to Cart</div>
+                    </div>
+                `;
+                container.appendChild(shoeTile);
+            });
+        }
+
+        function populateFilters() {
+            const colorFilter = document.getElementById("color-filter");
+            const sizeFilter = document.getElementById("size-filter");
+
+            let colors = new Set();
+            let sizes = new Set();
+
+            shoes.forEach(shoe => {
+                shoe.colors.forEach(color => colors.add(color));
+                shoe.sizes.forEach(size => sizes.add(size));
+            });
+
+            colors.forEach(color => {
+                let option = document.createElement("option");
+                option.value = color;
+                option.textContent = color;
+                colorFilter.appendChild(option);
+            });
+
+            sizes.forEach(size => {
+                let option = document.createElement("option");
+                option.value = size;
+                option.textContent = size;
+                sizeFilter.appendChild(option);
+            });
+
+            colorFilter.addEventListener("change", () => filterShoes());
+            sizeFilter.addEventListener("change", () => filterShoes());
+        }
+
+        function filterShoes(brand = null) {
+            const selectedColor = document.getElementById("color-filter").value;
+            const selectedSize = document.getElementById("size-filter").value;
+
+            const filteredShoes = shoes.filter(shoe =>
+                (brand ? shoe.brand === brand : true) &&
+                (selectedColor === "all" || shoe.colors.includes(selectedColor)) &&
+                (selectedSize === "all" || shoe.sizes.includes(Number(selectedSize)))
+            );
+
+            displayShoes(filteredShoes);
+        }
+
+        function openModal(name, price, rating, image, colors, sizes) {
+            const modal = document.getElementById("shoe-modal");
+            const modalImage = document.getElementById("modal-image");
+            const modalName = document.getElementById("modal-shoe-name");
+            const modalPrice = document.getElementById("modal-shoe-price");
+            const modalRating = document.getElementById("modal-shoe-rating");
+            const modalColors = document.getElementById("modal-shoe-colors");
+            const modalSizes = document.getElementById("modal-shoe-sizes");
+            const addToCartBtn = document.querySelector("#modal-add-to-cart");
+            const buyNowBtn = document.querySelector(".buy-now");
+
+            modalImage.src = image;
+            modalName.textContent = name;
+            modalPrice.textContent = price;
+            modalRating.textContent = rating;
+            modalColors.textContent = "Colors: " + colors;
+            modalSizes.textContent = "Sizes: " + sizes;
+
+            modal.style.display = "flex";
+
+            // Add event listener for Buy Now button
+            buyNowBtn.addEventListener("click", () => {
+                // Redirect to billing page
+                window.location.href = 'payment.html';
+            });
+
+            // Add event listener for Add to Cart button in modal
+            addToCartBtn.onclick = function() {
+                addToCart(name, price, image);
+                closeModal();
+            };
+        }
+
+        // Close modal when clicking the close button
+        document.getElementById("close-modal").addEventListener("click", function() {
+            closeModal();
+        });
+
+        function closeModal() {
+            document.getElementById("shoe-modal").style.display = "none";
+        }
+
+        // Close modal when clicking outside of it
+        window.addEventListener("click", function(event) {
+            if (event.target == document.getElementById("shoe-modal")) {
+                closeModal();
+            }
+        });
+
+        // Find shoe by name
+        function findShoeByName(name) {
+            return shoes.find(shoe => shoe.name === name);
+        }
+
+        // Calculate discounted price
+        function calculateDiscountedPrice(price, offer) {
+            // Remove ₹ symbol and commas, convert to number
+            const numericPrice = parseInt(price.replace(/₹|,/g, ""));
+            
+            if (offer === "30% OFF") {
+                return numericPrice * 0.7; // 30% off
+            } else {
+                return numericPrice; // No discount
+            }
+        }
+
+        // Format price with ₹ symbol and commas
+        function formatPrice(price) {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(price).replace('INR', '₹');
+        }
+
+        // Cart functionality
+        function addToCart(name, price, image) {
+            const shoe = findShoeByName(name);
+            const offer = shoe ? shoe.offer : null;
+            
+            // Check if item already exists in cart
+            const existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    name: name,
+                    price: price,
+                    image: image,
+                    quantity: 1,
+                    offer: offer
+                });
+            }
+            
+            updateCart();
+            openCartSidebar();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function applyFirstOrderDiscount() {
+            isFirstOrder = document.getElementById("first-order-discount").checked;
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById("cart-items");
+            const cartEmpty = document.getElementById("cart-empty");
+            const cartSummary = document.getElementById("cart-summary");
+            const cartCheckout = document.getElementById("cart-checkout");
+            const cartBadge = document.getElementById("cart-badge");
+            
+            // Update cart badge
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            if (totalItems > 0) {
+                cartBadge.textContent = totalItems;
+                cartBadge.style.display = "flex";
+            } else {
+                cartBadge.style.display = "none";
+            }
+            
+            // Clear cart items
+            cartItems.innerHTML = "";
+            
+            if (cart.length === 0) {
+                cartEmpty.style.display = "block";
+                cartSummary.style.display = "none";
+                cartCheckout.style.display = "none";
+                return;
+            }
+            
+            cartEmpty.style.display = "none";
+            cartSummary.style.display = "block";
+            cartCheckout.style.display = "block";
+            
+            // Calculate totals
+            let subtotal = 0;
+            let discountTotal = 0;
+            
+            // Process Buy 1 Get 1 Free items first
+            const buy1Get1Items = {};
+            
+            cart.forEach(item => {
+                if (item.offer === "Buy 1 Get 1") {
+                    if (!buy1Get1Items[item.name]) {
+                        buy1Get1Items[item.name] = {
+                            count: item.quantity,
+                            price: parseInt(item.price.replace(/₹|,/g, ""))
+                        };
+                    }
+                }
+            });
+            
+            // Add items to cart
+            cart.forEach((item, index) => {
+                const cartItem = document.createElement("div");
+                cartItem.classList.add("cart-item");
+                
+                // Extract numeric price value (remove ₹ and commas)
+                const priceValue = parseInt(item.price.replace(/₹|,/g, ""));
+                let itemTotal = priceValue * item.quantity;
+                let discountedPrice = priceValue;
+                let discountAmount = 0;
+                let discountText = "";
+                
+                // Apply discounts based on offer
+                if (item.offer === "30% OFF") {
+                    discountedPrice = calculateDiscountedPrice(item.price, item.offer);
+                    discountAmount = (priceValue - discountedPrice) * item.quantity;
+                    discountText = `<div class="cart-item-discount">30% OFF: -${formatPrice(discountAmount)}</div>`;
+                    itemTotal = discountedPrice * item.quantity;
+                } else if (item.offer === "Buy 1 Get 1" && buy1Get1Items[item.name]) {
+                    const freeItems = Math.floor(item.quantity / 2);
+                    discountAmount = priceValue * freeItems;
+                    discountText = `<div class="cart-item-discount">Buy 1 Get 1: ${freeItems} free item(s)</div>`;
+                    itemTotal = priceValue * (item.quantity - freeItems);
+                }
+                
+                subtotal += priceValue * item.quantity;
+                discountTotal += discountAmount;
+                
+                cartItem.innerHTML = `
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">
+                            ${item.offer ? `<span class="cart-item-original-price">${item.price}</span>` : ''}
+                            ${formatPrice(discountedPrice)} × ${item.quantity}
+                        </div>
+                        ${discountText}
+                    </div>
+                    <button class="cart-item-remove" onclick="removeFromCart(${index})">Remove</button>
+                `;
+                
+                cartItems.appendChild(cartItem);
+            });
+            
+            // Apply first order discount if checked
+            let firstOrderDiscount = 0;
+            if (isFirstOrder) {
+                firstOrderDiscount = Math.round((subtotal - discountTotal) * 0.15);
+                discountTotal += firstOrderDiscount;
+            }
+            
+            // Calculate final total
+            const finalTotal = subtotal - discountTotal;
+            
+            // Update summary
+            document.getElementById("cart-subtotal-amount").textContent = formatPrice(subtotal);
+            document.getElementById("cart-discount-amount").textContent = `-${formatPrice(discountTotal)}`;
+            document.getElementById("cart-final-total-amount").textContent = formatPrice(finalTotal);
+        }
+
+        function openCartSidebar() {
+            document.getElementById("cart-sidebar").classList.add("open");
+            document.getElementById("overlay").classList.add("open");
+        }
+
+        function closeCartSidebar() {
+            document.getElementById("cart-sidebar").classList.remove("open");
+            document.getElementById("overlay").classList.remove("open");
+        }
+
+        // Wishlist functionality
+        function toggleWishlist(name, price, image) {
+            // Check if item already exists in wishlist
+            const existingItemIndex = wishlist.findIndex(item => item.name === name);
+            
+            if (existingItemIndex !== -1) {
+                // Remove from wishlist
+                wishlist.splice(existingItemIndex, 1);
+            } else {
+                // Add to wishlist
+                wishlist.push({
+                    name: name,
+                    price: price,
+                    image: image
+                });
+            }
+            
+            updateWishlist();
+            // Refresh display to update heart icons
+            filterShoes();
+        }
+
+        function removeFromWishlist(index) {
+            wishlist.splice(index, 1);
+            updateWishlist();
+            // Refresh display to update heart icons
+            filterShoes();
+        }
+
+        function updateWishlist() {
+            const wishlistItems = document.getElementById("wishlist-items");
+            const wishlistEmpty = document.getElementById("wishlist-empty");
+            const wishlistBadge = document.getElementById("wishlist-badge");
+            
+            // Update wishlist badge
+            if (wishlist.length > 0) {
+                wishlistBadge.textContent = wishlist.length;
+                wishlistBadge.style.display = "flex";
+            } else {
+                wishlistBadge.style.display = "none";
+            }
+            
+            // Clear wishlist items
+            wishlistItems.innerHTML = "";
+            
+            if (wishlist.length === 0) {
+                wishlistEmpty.style.display = "block";
+                return;
+            }
+            
+            wishlistEmpty.style.display = "none";
+            
+            // Add items to wishlist
+            wishlist.forEach((item, index) => {
+                const wishlistItem = document.createElement("div");
+                wishlistItem.classList.add("wishlist-item");
+                
+                wishlistItem.innerHTML = `
+                    <div class="wishlist-item-info">
+                        <div class="wishlist-item-name">${item.name}</div>
+                        <div class="wishlist-item-price">${item.price}</div>
+                    </div>
+                    <button class="wishlist-item-remove" onclick="removeFromWishlist(${index})">Remove</button>
+                `;
+                
+                wishlistItems.appendChild(wishlistItem);
+            });
+        }
+
+        function openWishlistSidebar() {
+            document.getElementById("wishlist-sidebar").classList.add("open");
+            document.getElementById("overlay").classList.add("open");
+        }
+
+        function closeWishlistSidebar() {
+            document.getElementById("wishlist-sidebar").classList.remove("open");
+            document.getElementById("overlay").classList.remove("open");
+        }
+
+        // Search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById("search-input");
+            const searchDropdown = document.getElementById("search-dropdown");
+            
+            searchInput.addEventListener("input", function() {
+                const query = this.value.toLowerCase().trim();
+                
+                if (query.length < 2) {
+                    searchDropdown.classList.remove("active");
+                    searchDropdown.innerHTML = "";
+                    return;
+                }
+                
+                // Filter shoes based on search query
+                const results = shoes.filter(shoe => 
+                    shoe.name.toLowerCase().includes(query) || 
+                    shoe.brand.toLowerCase().includes(query)
+                );
+                
+                // Display results
+                searchDropdown.innerHTML = "";
+                
+                if (results.length === 0) {
+                    searchDropdown.innerHTML = `<div class="not-found">Product Not Found</div>`;
+                } else {
+                    results.forEach(shoe => {
+                        const item = document.createElement("div");
+                        item.classList.add("search-item");
+                        item.textContent = shoe.name;
+                        item.addEventListener("click", function() {
+                            // Navigate to product or open modal
+                            openModal(shoe.name, shoe.price, shoe.rating, shoe.image, shoe.colors.join(", "), shoe.sizes.join(", "));
+                            searchDropdown.classList.remove("active");
+                            searchInput.value = "";
+                        });
+                        searchDropdown.appendChild(item);
+                    });
+                }
+                
+                searchDropdown.classList.add("active");
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener("click", function(event) {
+                if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
+                    searchDropdown.classList.remove("active");
+                }
+            });
+        }
+
+        // Cart toggle event listener
+        document.getElementById("cart-toggle").addEventListener("click", function(e) {
+            e.preventDefault();
+            openCartSidebar();
+        });
+
+        // Cart close button event listener
+        document.getElementById("cart-close").addEventListener("click", closeCartSidebar);
+
+        // Wishlist toggle event listeners
+        document.getElementById("wishlist-toggle").addEventListener("click", function(e) {
+            e.preventDefault();
+            openWishlistSidebar();
+        });
+
+        document.getElementById("wishlist-icon-toggle").addEventListener("click", function(e) {
+            e.preventDefault();
+            openWishlistSidebar();
+        });
+
+        // Wishlist close button event listener
+        document.getElementById("wishlist-close").addEventListener("click", closeWishlistSidebar);
+
+        // Overlay click to close sidebars
+        document.getElementById("overlay").addEventListener("click", function() {
+            closeCartSidebar();
+            closeWishlistSidebar();
+        });
+
+        // Checkout button event listener
+        document.getElementById("cart-checkout").addEventListener("click", function() {
+            window.location.href = 'payment.html';
+        });
+
+        // Initial setup
+        displayBrands();
+        populateFilters();
+        displayShoes(shoes);
+        setupSearch();
+    </script>
+</body>
+</html>
